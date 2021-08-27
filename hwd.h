@@ -7,9 +7,9 @@
 #endif
 
 #ifndef _WIN64
-#pragma comment(lib, "HwdLib/Win32/hwd.lib")
+#pragma comment(lib, "./HwdLib/Win32/hwd.lib")
 #else
-#pragma comment(lib, "HwdLib/Win64/hwd.lib")
+#pragma comment(lib, "./HwdLib/Win64/hwd.lib")
 #endif
 
 #define false 0
