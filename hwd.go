@@ -148,7 +148,7 @@ func Reg(username string, password string, email string, referrer string, code s
 }
 
 //发送密码重置邮件
-func hwd_sendMail(username string, email string, code string) bool {
+func SendMail(username string, email string, code string) bool {
 	cUsername := C.CString(username)
 	cEmail := C.CString(email)
 	cCode := C.CString(code)
