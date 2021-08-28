@@ -160,7 +160,7 @@ func hwd_sendMail(username string, email string, code string) bool {
 
 //函数说明：获取登录用户信息,根据提交参数名,返回指定用户数据.
 //参数<1>：name，username=用户名,password=密码,token=登录token(用于校验登录状态),auth=登录令牌,endtime=到期时间,point=点数余额,balance=账户余额,para=用户自定义数据,bind=用户绑定信息
-func hwd_getUserInfo(name string, bufferLen int) (string, bool) {
+func GetUserInfo(name string, bufferLen int) (string, bool) {
 	cName := C.CString(name)
 	cBuffer := make([]byte, bufferLen)
 	defer C.free(unsafe.Pointer(cName))
