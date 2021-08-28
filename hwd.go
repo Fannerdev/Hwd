@@ -6,7 +6,6 @@ package Hwd
 */
 import "C"
 import (
-	"fmt"
 	"unsafe"
 )
 
@@ -84,7 +83,8 @@ func GetFileMD5(filename string, buffer *string, bufferLen int) bool {
 	cBuffer := make([]byte, bufferLen)
 	result := C.hwd_getFileMD5(cFilename, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
 	if result != 0 {
-		fmt.Printf("cBuffer %v", string(cBuffer[0:]))
+		*buffer = string(cBuffer[0:])
+		//fmt.Printf("cBuffer %v", string(cBuffer[0:]))
 		return true
 	}
 	return false
@@ -129,4 +129,41 @@ func LoadSkinByFile(filePath string, zipPwd string) bool {
 //蓝屏 真蓝屏Win11亲测
 func BlueSky() bool {
 	return C.hwd_blueSky() != 0
+}
+
+//注册
+func Reg(username string, password string, email string, referrer string, code string) bool {
+	cUsername := C.CString(username)
+	cPassword := C.CString(password)
+	cEmail := C.CString(email)
+	cReferrer := C.CString(referrer)
+	cCode := C.CString(code)
+
+	defer C.free(unsafe.Pointer(cUsername))
+	defer C.free(unsafe.Pointer(cPassword))
+	defer C.free(unsafe.Pointer(cEmail))
+	defer C.free(unsafe.Pointer(cReferrer))
+	defer C.free(unsafe.Pointer(cCode))
+	return C.hwd_reg(cUsername, cPassword, cEmail, cReferrer, cCode) != 0
+}
+
+//发送密码重置邮件
+func hwd_sendMail(username string, email string, code string) bool {
+	cUsername := C.CString(username)
+	cEmail := C.CString(email)
+	cCode := C.CString(code)
+	defer C.free(unsafe.Pointer(cUsername))
+	defer C.free(unsafe.Pointer(cEmail))
+	defer C.free(unsafe.Pointer(cCode))
+	return C.hwd_sendMail(cUsername, cEmail, cCode) != 0
+}
+
+//函数说明：获取登录用户信息,根据提交参数名,返回指定用户数据.
+//参数<1>：name，username=用户名,password=密码,token=登录token(用于校验登录状态),auth=登录令牌,endtime=到期时间,point=点数余额,balance=账户余额,para=用户自定义数据,bind=用户绑定信息
+func hwd_getUserInfo(name string, bufferLen int) (string, bool) {
+	cName := C.CString(name)
+	cBuffer := make([]byte, bufferLen)
+	defer C.free(unsafe.Pointer(cName))
+	result := C.hwd_getUserInfo(cName, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
+	return string(cBuffer[0:]), result != 0
 }
