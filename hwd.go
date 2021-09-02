@@ -167,3 +167,10 @@ func GetUserInfo(name string, bufferLen int) (string, bool) {
 	result := C.hwd_getUserInfo(cName, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
 	return string(cBuffer[0:]), result != 0
 }
+func GetFastInfo(name string, bufferLen int) (string, bool) {
+	cName := C.CString(name)
+	cBuffer := make([]byte, bufferLen)
+	defer C.free(unsafe.Pointer(cName))
+	result := C.hwd_getFastInfo(cName, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
+	return string(cBuffer[0:]), result != 0
+}
