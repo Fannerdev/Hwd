@@ -20,15 +20,16 @@ func GetLastErrorCode() int {
 }
 
 //获取最后错误信息
-func GetLastErrorMsg(buffers *string, bufferLen int) bool {
+func GetLastErrorMsg(bufferLen int) (string, bool) {
 	buffer := make([]byte, bufferLen)
 	result := C.hwd_getLastErrorMsg((*C.char)(unsafe.Pointer(&buffer[0])), C.int(bufferLen))
-	if result != 0 {
-		//fmt.Printf("buffercs: %s\n", string(buffer[0:]))
-		*buffers = string(buffer[0:])
-		return true
-	}
-	return false
+	return string(buffer[0:]), int(result) != 0
+	// if result != 0 {
+	// 	//fmt.Printf("buffercs: %s\n", string(buffer[0:]))
+	// 	*buffers =
+	// 	return true
+	// }
+	// return false
 }
 
 //加载皮肤Bytes
