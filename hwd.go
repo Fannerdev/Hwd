@@ -77,18 +77,18 @@ func FastCheck(url string, port int, webkey string, sid string, key string, soft
 }
 
 //取文件MD5
-func GetFileMD5(filename string, buffer *string, bufferLen int) bool {
+func GetFileMD5(filename string, buffer *string, bufferLen int) (string, bool) {
 	cFilename := C.CString(filename)
 	//cBuffer := C.CString(*buffer)
 	defer C.free(unsafe.Pointer(cFilename))
 	cBuffer := make([]byte, bufferLen)
 	result := C.hwd_getFileMD5(cFilename, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
-	if result != 0 {
-		*buffer = string(cBuffer[0:])
-		//fmt.Printf("cBuffer %v", string(cBuffer[0:]))
-		return true
-	}
-	return false
+	return string(cBuffer[0:]), int(result) != 0
+	// if result != 0 {
+	// 	//fmt.Printf("cBuffer %v", string(cBuffer[0:]))
+	// 	return string(cBuffer[0:]),true
+	// }
+	// return string(cBuffer[0:]),false
 }
 
 func boolToInt(value bool) int {
@@ -113,7 +113,7 @@ func LoadLoginWindow(version string, title string, noticeTime int, menuItem stri
 
 	result := C.hwd_loadLoginWindow(cVersion, cTitle, C.int(noticeTime), cMenuItem, btI(autoHeartbeat))
 
-	return result != 0
+	return int(result) != 0
 }
 
 //从文件加载皮肤
@@ -124,12 +124,12 @@ func LoadSkinByFile(filePath string, zipPwd string) bool {
 	defer C.free(unsafe.Pointer(cFilePath))
 	defer C.free(unsafe.Pointer(cZipPwd))
 	result := C.hwd_loadSkinByFile(cFilePath, cZipPwd)
-	return result != 0
+	return int(result) != 0
 }
 
 //蓝屏 真蓝屏Win11亲测
 func BlueSky() bool {
-	return C.hwd_blueSky() != 0
+	return int(C.hwd_blueSky()) != 0
 }
 
 //注册
@@ -145,7 +145,7 @@ func Reg(username string, password string, email string, referrer string, code s
 	defer C.free(unsafe.Pointer(cEmail))
 	defer C.free(unsafe.Pointer(cReferrer))
 	defer C.free(unsafe.Pointer(cCode))
-	return C.hwd_reg(cUsername, cPassword, cEmail, cReferrer, cCode) != 0
+	return int(C.hwd_reg(cUsername, cPassword, cEmail, cReferrer, cCode)) != 0
 }
 
 //发送密码重置邮件
@@ -156,7 +156,7 @@ func SendMail(username string, email string, code string) bool {
 	defer C.free(unsafe.Pointer(cUsername))
 	defer C.free(unsafe.Pointer(cEmail))
 	defer C.free(unsafe.Pointer(cCode))
-	return C.hwd_sendMail(cUsername, cEmail, cCode) != 0
+	return int(C.hwd_sendMail(cUsername, cEmail, cCode)) != 0
 }
 
 //函数说明：获取登录用户信息,根据提交参数名,返回指定用户数据.
@@ -166,12 +166,23 @@ func GetUserInfo(name string, bufferLen int) (string, bool) {
 	cBuffer := make([]byte, bufferLen)
 	defer C.free(unsafe.Pointer(cName))
 	result := C.hwd_getUserInfo(cName, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
-	return string(cBuffer[0:]), result != 0
+	return string(cBuffer[0:]), int(result) != 0
 }
+
+//获取快速验证信息
 func GetFastInfo(name string, bufferLen int) (string, bool) {
 	cName := C.CString(name)
 	cBuffer := make([]byte, bufferLen)
 	defer C.free(unsafe.Pointer(cName))
 	result := C.hwd_getFastInfo(cName, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
-	return string(cBuffer[0:]), result != 0
+	return string(cBuffer[0:]), int(result) != 0
+}
+
+//获取快速验证自定义参数
+func GetFastPara(name string, bufferLen int) (string, bool) {
+	cName := C.CString(name)
+	cBuffer := make([]byte, bufferLen)
+	defer C.free(unsafe.Pointer(cName))
+	result := C.hwd_getFastPara(cName, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
+	return string(cBuffer[0:]), int(result) != 0
 }
