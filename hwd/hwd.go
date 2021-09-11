@@ -1,4 +1,4 @@
-package Hwd
+package hwd
 
 /* 	#cgo windows,amd64 LDFLAGS:-L./HwdLib/Win64 -lhwd
 #include "hwd.h"
@@ -6,6 +6,7 @@ package Hwd
 */
 import "C"
 import (
+	"strings"
 	"unsafe"
 )
 

@@ -8,5 +8,5 @@ Golang-Hwd Modules
 将hwd.dll放置到运行目录
 go get github.com/Fannerdev/Hwd
 import 添加
-hwd "github.com/Fannerdev/Hwd"
+"github.com/Fannerdev/Hwd/hwd"
 ```
