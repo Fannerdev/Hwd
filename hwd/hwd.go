@@ -192,4 +192,14 @@ func DeleteZero(str string) string {
 	return strings.ReplaceAll(str, string(byte(0)), "")
 }
 
+func CallPHP(EventName string, Para string, bufferLen int) (string, bool) {
+	cEventName := C.CString(EventName)
+	cPara := C.CString(Para)
+	cBuffer := make([]byte, bufferLen)
+	defer C.free(unsafe.Pointer(cEventName))
+	defer C.free(unsafe.Pointer(cPara))
+	result := C.hwd_callPHP(cEventName, cPara, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
+	return DeleteZero(string(cBuffer[0:])), int(result) != 0
+}
+
 //return strings.ReplaceAll(strR, "\n", "")
