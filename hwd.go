@@ -23,7 +23,7 @@ func GetLastErrorCode() int {
 func GetLastErrorMsg(bufferLen int) (string, bool) {
 	buffer := make([]byte, bufferLen)
 	result := C.hwd_getLastErrorMsg((*C.char)(unsafe.Pointer(&buffer[0])), C.int(bufferLen))
-	return string(buffer[0:]), int(result) != 0
+	return DeleteZero(string(buffer[0:])), int(result) != 0
 	// if result != 0 {
 	// 	//fmt.Printf("buffercs: %s\n", string(buffer[0:]))
 	// 	*buffers =
@@ -83,7 +83,7 @@ func GetFileMD5(filename string, buffer *string, bufferLen int) (string, bool) {
 	defer C.free(unsafe.Pointer(cFilename))
 	cBuffer := make([]byte, bufferLen)
 	result := C.hwd_getFileMD5(cFilename, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
-	return string(cBuffer[0:]), int(result) != 0
+	return DeleteZero(string(cBuffer[0:])), int(result) != 0
 	// if result != 0 {
 	// 	//fmt.Printf("cBuffer %v", string(cBuffer[0:]))
 	// 	return string(cBuffer[0:]),true
@@ -166,7 +166,7 @@ func GetUserInfo(name string, bufferLen int) (string, bool) {
 	cBuffer := make([]byte, bufferLen)
 	defer C.free(unsafe.Pointer(cName))
 	result := C.hwd_getUserInfo(cName, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
-	return string(cBuffer[0:]), int(result) != 0
+	return DeleteZero(string(cBuffer[0:])), int(result) != 0
 }
 
 //获取快速验证信息
@@ -175,7 +175,7 @@ func GetFastInfo(name string, bufferLen int) (string, bool) {
 	cBuffer := make([]byte, bufferLen)
 	defer C.free(unsafe.Pointer(cName))
 	result := C.hwd_getFastInfo(cName, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
-	return string(cBuffer[0:]), int(result) != 0
+	return DeleteZero(string(cBuffer[0:])), int(result) != 0
 }
 
 //获取快速验证自定义参数
@@ -184,5 +184,10 @@ func GetFastPara(name string, bufferLen int) (string, bool) {
 	cBuffer := make([]byte, bufferLen)
 	defer C.free(unsafe.Pointer(cName))
 	result := C.hwd_getFastPara(cName, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
-	return string(cBuffer[0:]), int(result) != 0
+	return DeleteZero(string(cBuffer[0:])), int(result) != 0
+}
+
+func DeleteZero(str string) string {
+	return strings.ReplaceAll(str, string(byte(0)), "")
+	//return strings.ReplaceAll(strR, "\n", "")
 }
