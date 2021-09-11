@@ -1,3 +1,3 @@
-module github.com/Fannerdev/Hwd v0.0.2
+module github.com/Fannerdev/Hwd
 
 go 1.16
