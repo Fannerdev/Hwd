@@ -189,5 +189,6 @@ func GetFastPara(name string, bufferLen int) (string, bool) {
 
 func DeleteZero(str string) string {
 	return strings.ReplaceAll(str, string(byte(0)), "")
-	//return strings.ReplaceAll(strR, "\n", "")
 }
+
+//return strings.ReplaceAll(strR, "\n", "")
