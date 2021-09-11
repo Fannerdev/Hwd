@@ -202,4 +202,29 @@ func CallPHP(EventName string, Para string, bufferLen int) (string, bool) {
 	return DeleteZero(string(cBuffer[0:])), int(result) != 0
 }
 
+func Save(name string, value string) bool {
+	cName := C.CString(name)
+	cValue := C.CString(value)
+	defer C.free(unsafe.Pointer(cName))
+	defer C.free(unsafe.Pointer(cValue))
+	result := C.hwd_save(cName, cValue)
+	return int(result) != 0
+}
+
+func Read(name string, defaultValue string, bufferLen int) (string, bool) {
+	cName := C.CString(name)
+	cValue := C.CString(defaultValue)
+	cBuffer := make([]byte, bufferLen)
+	defer C.free(unsafe.Pointer(cName))
+	defer C.free(unsafe.Pointer(cValue))
+	result := C.hwd_read(cName, cValue, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
+	return DeleteZero(string(cBuffer[0:])), int(result) != 0
+}
+
+func GetMachineCode(bufferLen int) (string, bool) {
+	cBuffer := make([]byte, bufferLen)
+	result := C.hwd_getMachineCode((*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
+	return DeleteZero(string(cBuffer[0:])), int(result) != 0
+}
+
 //return strings.ReplaceAll(strR, "\n", "")
