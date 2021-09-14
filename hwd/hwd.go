@@ -23,6 +23,7 @@ func GetLastErrorCode() int {
 //获取最后错误信息
 func GetLastErrorMsg(bufferLen int) (string, bool) {
 	buffer := make([]byte, bufferLen)
+	defer C.free(unsafe.Pointer(&buffer[0]))
 	result := C.hwd_getLastErrorMsg((*C.char)(unsafe.Pointer(&buffer[0])), C.int(bufferLen))
 	return DeleteZero(string(buffer[0:])), int(result) != 0
 	// if result != 0 {
@@ -83,6 +84,7 @@ func GetFileMD5(filename string, buffer *string, bufferLen int) (string, bool) {
 	//cBuffer := C.CString(*buffer)
 	defer C.free(unsafe.Pointer(cFilename))
 	cBuffer := make([]byte, bufferLen)
+	defer C.free(unsafe.Pointer(&cBuffer[0]))
 	result := C.hwd_getFileMD5(cFilename, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
 	return DeleteZero(string(cBuffer[0:])), int(result) != 0
 	// if result != 0 {
@@ -166,6 +168,7 @@ func GetUserInfo(name string, bufferLen int) (string, bool) {
 	cName := C.CString(name)
 	cBuffer := make([]byte, bufferLen)
 	defer C.free(unsafe.Pointer(cName))
+	defer C.free(unsafe.Pointer(&cBuffer[0]))
 	result := C.hwd_getUserInfo(cName, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
 	return DeleteZero(string(cBuffer[0:])), int(result) != 0
 }
@@ -184,6 +187,7 @@ func GetFastPara(name string, bufferLen int) (string, bool) {
 	cName := C.CString(name)
 	cBuffer := make([]byte, bufferLen)
 	defer C.free(unsafe.Pointer(cName))
+	defer C.free(unsafe.Pointer(&cBuffer[0]))
 	result := C.hwd_getFastPara(cName, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
 	return DeleteZero(string(cBuffer[0:])), int(result) != 0
 }
@@ -198,6 +202,7 @@ func CallPHP(EventName string, Para string, bufferLen int) (string, bool) {
 	cBuffer := make([]byte, bufferLen)
 	defer C.free(unsafe.Pointer(cEventName))
 	defer C.free(unsafe.Pointer(cPara))
+	defer C.free(unsafe.Pointer(&cBuffer[0]))
 	result := C.hwd_callPHP(cEventName, cPara, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
 	return DeleteZero(string(cBuffer[0:])), int(result) != 0
 }
@@ -217,12 +222,14 @@ func Read(name string, defaultValue string, bufferLen int) (string, bool) {
 	cBuffer := make([]byte, bufferLen)
 	defer C.free(unsafe.Pointer(cName))
 	defer C.free(unsafe.Pointer(cValue))
+	defer C.free(unsafe.Pointer(&cBuffer[0]))
 	result := C.hwd_read(cName, cValue, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
 	return DeleteZero(string(cBuffer[0:])), int(result) != 0
 }
 
 func GetMachineCode(bufferLen int) (string, bool) {
 	cBuffer := make([]byte, bufferLen)
+	defer C.free(unsafe.Pointer(&cBuffer[0]))
 	result := C.hwd_getMachineCode((*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
 	return DeleteZero(string(cBuffer[0:])), int(result) != 0
 }
