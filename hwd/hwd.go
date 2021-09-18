@@ -26,12 +26,6 @@ func GetLastErrorMsg(bufferLen int) (string, bool) {
 
 	result := C.hwd_getLastErrorMsg((*C.char)(unsafe.Pointer(&buffer[0])), C.int(bufferLen))
 	return DeleteZero(string(buffer[0:])), int(result) != 0
-	// if result != 0 {
-	// 	//fmt.Printf("buffercs: %s\n", string(buffer[0:]))
-	// 	*buffers =
-	// 	return true
-	// }
-	// return false
 }
 
 //加载皮肤Bytes
@@ -87,11 +81,6 @@ func GetFileMD5(filename string, buffer *string, bufferLen int) (string, bool) {
 
 	result := C.hwd_getFileMD5(cFilename, (*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
 	return DeleteZero(string(cBuffer[0:])), int(result) != 0
-	// if result != 0 {
-	// 	//fmt.Printf("cBuffer %v", string(cBuffer[0:]))
-	// 	return string(cBuffer[0:]),true
-	// }
-	// return string(cBuffer[0:]),false
 }
 
 func boolToInt(value bool) int {
@@ -196,6 +185,7 @@ func DeleteZero(str string) string {
 	return strings.ReplaceAll(str, string(byte(0)), "")
 }
 
+//调用PHP函数
 func CallPHP(EventName string, Para string, bufferLen int) (string, bool) {
 	cEventName := C.CString(EventName)
 	cPara := C.CString(Para)
@@ -207,6 +197,7 @@ func CallPHP(EventName string, Para string, bufferLen int) (string, bool) {
 	return DeleteZero(string(cBuffer[0:])), int(result) != 0
 }
 
+//保存本地配置项
 func Save(name string, value string) bool {
 	cName := C.CString(name)
 	cValue := C.CString(value)
@@ -216,6 +207,7 @@ func Save(name string, value string) bool {
 	return int(result) != 0
 }
 
+//读取本地配置项
 func Read(name string, defaultValue string, bufferLen int) (string, bool) {
 	cName := C.CString(name)
 	cValue := C.CString(defaultValue)
@@ -227,11 +219,10 @@ func Read(name string, defaultValue string, bufferLen int) (string, bool) {
 	return DeleteZero(string(cBuffer[0:])), int(result) != 0
 }
 
+//获取机器码
 func GetMachineCode(bufferLen int) (string, bool) {
 	cBuffer := make([]byte, bufferLen)
 
 	result := C.hwd_getMachineCode((*C.char)(unsafe.Pointer(&cBuffer[0])), C.int(bufferLen))
 	return DeleteZero(string(cBuffer[0:])), int(result) != 0
 }
-
-//return strings.ReplaceAll(strR, "\n", "")
